@@ -106,3 +106,43 @@
 3. **Construir y Ejecutar el Contenedor Docker:**
    - Utiliza el `Dockerfile` proporcionado para construir la imagen Docker.
    - Ejecuta el contenedor Docker con el comando adecuado según tu sistema operativo.
+
+## Funcionalidades del Código
+
+### Descripción General
+
+El proyecto consiste en la creación de un screensaver que visualiza **Curvas de Lissajous** utilizando la biblioteca **SDL2** para la representación gráfica. Este screensaver genera curvas animadas, donde los puntos son trazados con colores pseudoaleatorios, creando una experiencia visual atractiva y dinámica.
+
+### Detalles Técnicos
+
+- **Gráfica de Curvas de Lissajous:**
+  - Las curvas de Lissajous son generadas por la función `draw_lissajous_curve`, la cual calcula las posiciones de los puntos en la curva usando funciones seno con parámetros específicos (a, b, y delta) y el tiempo `time`.
+  - Los colores de los puntos se generan de forma pseudoaleatoria en cada frame.
+
+- **Paralelización:**
+  - Aunque el código actual no incluye paralelización explícita con OpenMP, esta podría implementarse en la función `draw_lissajous_curve` para calcular los puntos de la curva en paralelo, distribuyendo las iteraciones del ciclo `for` entre varios hilos, lo que mejoraría el rendimiento en sistemas con múltiples núcleos.
+
+- **Control de FPS:**
+  - El frame rate es controlado mediante un `SDL_Delay(16)`, que limita la actualización de la pantalla a aproximadamente 60 FPS, garantizando una animación fluida.
+
+### Posibles Mejoras
+
+- **Paralelización con OpenMP:**
+  - Implementar paralelización en el cálculo de puntos de la curva para mejorar el rendimiento en sistemas con múltiples núcleos.
+  
+  - Ejemplo de cómo se podría paralelizar:
+    ```c
+    #pragma omp parallel for
+    for (int i = 0; i < N; i++) {
+        // Cálculo de puntos de la curva
+    }
+    ```
+
+- **Configuración Dinámica:**
+  - Permitir al usuario ajustar los parámetros `a`, `b`, `delta`, y `amplitude` en tiempo real para modificar la forma de las curvas de Lissajous.
+  
+- **Mejoras Visuales:**
+  - Añadir más efectos visuales, como gradientes de color o efectos de transición entre curvas.
+  
+- **Optimización:**
+  - Optimizar el uso de memoria y reducir el overhead de las operaciones gráficas para mejorar el rendimiento en sistemas con recursos limitados.
