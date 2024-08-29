@@ -3,6 +3,7 @@ FROM ubuntu:latest
 
 # Instala las dependencias necesarias
 RUN apt-get update && apt-get install -y gcc g++ make libsdl2-dev
+RUN apt-get install libcairo2 libcairo2-dev
 
 # Establece el directorio de trabajo
 WORKDIR /usr/src

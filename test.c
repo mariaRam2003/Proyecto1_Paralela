@@ -18,7 +18,7 @@ void draw_lissajous_curve(cairo_t *cr, int N, float time) {
         int y = HEIGHT / 2 + amplitude * sin(b * t + delta + time);
 
         // Set random color
-        cairo_set_source_rgb(cr, 1 / (double)RAND_MAX, 1 / (double)RAND_MAX, 1 / (double)RAND_MAX);
+        cairo_set_source_rgb(cr, 255, 255, 255);
         cairo_rectangle(cr, x, y, 1, 1);
         cairo_fill(cr);
     }
