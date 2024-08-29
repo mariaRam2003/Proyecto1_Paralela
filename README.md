@@ -23,5 +23,5 @@ gcc -o test.o test.c `pkg-config --cflags --libs cairo` -lm
 Then to run it we call the executable and along it the number of curves we want to draw, in this example is 1000. 
 
 ```bash
-./test 1000
+./test.o 1000
 ```
