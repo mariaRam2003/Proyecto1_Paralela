@@ -4,9 +4,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <omp.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define WIDTH 640
 #define HEIGHT 480
+#define MAX_FRAMES 100 // Límite de creación de imágenes (puede ser modificado)
 
 void draw_lissajous_curve(cairo_t *cr, int N, float time, int index) {
     int amplitude = 150;
@@ -27,8 +30,8 @@ void draw_lissajous_curve(cairo_t *cr, int N, float time, int index) {
 }
 
 void save_frame_as_image(int frame_num, int num_curves) {
-    char filename[100];
-    snprintf(filename, sizeof(filename), "frame_%04d.png", frame_num);
+    char filename[150];
+    snprintf(filename, sizeof(filename), "frames/frame_%04d.png", frame_num);
 
     cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, WIDTH, HEIGHT);
     cairo_t *cr = cairo_create(surface);
@@ -38,7 +41,7 @@ void save_frame_as_image(int frame_num, int num_curves) {
 
     #pragma omp parallel for
     for (int i = 0; i < num_curves; i++) {
-        draw_lissajous_curve(cr, 1000, frame_num / 60.0, i);
+        draw_lissajous_curve(cr, 1000, frame_num / 30.0, i); // Ajuste de movimiento
     }
 
     cairo_surface_write_to_png(surface, filename);
@@ -48,8 +51,7 @@ void save_frame_as_image(int frame_num, int num_curves) {
 }
 
 void create_gif(int num_frames) {
-    system("convert -delay 5 -loop 0 frame_*.png lissajous.gif");
-    system("rm frame_*.png");
+    system("convert -delay 10 -loop 0 frames/frame_*.png lissajous.gif"); // Ajuste de delay
 }
 
 int main(int argc, char *argv[]) {
@@ -60,14 +62,22 @@ int main(int argc, char *argv[]) {
 
     int N = atoi(argv[1]);
     int num_curves = atoi(argv[2]);
+    
+    if (N > MAX_FRAMES) {
+        N = MAX_FRAMES; // Límite de creación de imágenes
+    }
+
     srand(time(NULL));
+
+    // Crear directorio para los frames
+    mkdir("frames", 0777);
 
     int frame_count = 0;
     while (frame_count < N) {
         save_frame_as_image(frame_count, num_curves);
         frame_count++;
     }
-
+    
     create_gif(frame_count);
 
     return 0;
