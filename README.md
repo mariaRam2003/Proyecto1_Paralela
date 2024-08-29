@@ -17,11 +17,11 @@ Once in the container, make sure you are on the working directory `/usr/src/`.
 
 To compile the program we use: 
 ```bash
-gcc -o test.o test.c `pkg-config --cflags --libs cairo` -lm
+gcc -o test.o test.c `pkg-config --cflags --libs cairo` -lm -fopenmp
 ```
 
 Then to run it we call the executable and along it the number of curves we want to draw, in this example is 1000. 
 
 ```bash
-./test.o 1000
+./test.o 100 '<numero de >'
 ```
