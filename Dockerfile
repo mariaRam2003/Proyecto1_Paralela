@@ -2,7 +2,10 @@
 FROM ubuntu:latest
 
 # Instala las dependencias necesarias
-RUN apt-get update && apt-get install -y gcc g++ make libsdl2-dev && apt-get install -y libcairo2 libcairo2-dev
+RUN apt-get update && \
+    apt-get install -y gcc g++ make libsdl2-dev libcairo2 libcairo2-dev \
+                       libgif-dev libpng-dev imagemagick \
+                       && rm -rf /var/lib/apt/lists/*
 
 # Establece el directorio de trabajo
 WORKDIR /usr/src
@@ -11,4 +14,4 @@ WORKDIR /usr/src
 COPY . .
 
 # Compila tu programa (opcional, si deseas compilarlo en la imagen)
-RUN gcc -o screensaver screensaver.c -lSDL2 -lm -fopenmp
+RUN gcc -o screensaver screensaver.c -lSDL2 -lcairo -lgif -lm -fopenmp
