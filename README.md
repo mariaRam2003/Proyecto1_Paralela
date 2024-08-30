@@ -3,7 +3,7 @@
 This project involves the creation of a screensaver using C. The implementation includes both sequential and parallel programming approaches to enable performance comparison.
 
 ## Example of View
-![Lissajous Curves Animation](frames/lissajous.gif)
+![Lissajous Curves Animation](lissajous.gif)
 
 ## Authors
 - Gustavo Andrés González - 21342
