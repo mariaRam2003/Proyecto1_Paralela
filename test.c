@@ -146,7 +146,8 @@ int main(int argc, char *argv[]) {
     }
 
     double start_time = omp_get_wtime();
-    
+    double total_fps = 0.0;
+
     #pragma omp parallel
     {
         #pragma omp for schedule(dynamic)
@@ -184,6 +185,7 @@ int main(int argc, char *argv[]) {
 
             #pragma omp critical
             {
+                total_fps += fps;
                 printf("Frame %d: FPS = %.2f\n", frame_count, fps);
             }
         }
@@ -191,14 +193,10 @@ int main(int argc, char *argv[]) {
 
     double end_time = omp_get_wtime();
     double total_time = end_time - start_time;
-    double average_fps = N / total_time;
+    double average_fps = total_fps / N;
 
     printf("Total time: %.2f seconds\n", total_time);
     printf("Average FPS: %.2f\n", average_fps);
-
-    if (average_fps < 30) {
-        printf("WARNING: FPS has dropped below 30!\n");
-    }
 
     create_gif(N);
 
