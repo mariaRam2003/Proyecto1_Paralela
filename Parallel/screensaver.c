@@ -13,9 +13,9 @@
 
 #define WIDTH 640
 #define HEIGHT 480
-#define MAX_FRAMES 100 // Límite de creación de imágenes (puede ser modificado) No mas de 700 Recommended: 700 and 5 curves
+#define MAX_FRAMES 100 // Límite de creación de imágenes (puede ser modificado) No más de 700 Recommended: 700 and 5 curves
 #define NUM_CURVE_TYPES 5
-#define FADE_DURATION 15 // Aumentar para que sea mas fast
+#define FADE_DURATION 15 // Aumentar para que sea más lento
 
 // Estructura para almacenar la posición de inicio de las curvas
 typedef struct {
@@ -32,11 +32,11 @@ typedef struct {
 
 // Parámetros predefinidos para diferentes tipos de curvas
 CurveParams curve_types[NUM_CURVE_TYPES] = {
-    {1.0f, 1.0f, M_PI / 2},    // Circle
-    {2.0f, 1.0f, M_PI / 2},    // Figure-8
+    {1.0f, 1.0f, M_PI / 2},    // Círculo
+    {2.0f, 1.0f, M_PI / 2},    // Figura en 8
     {3.0f, 2.0f, M_PI / 2},    // Trefoil
-    {3.0f, 4.0f, M_PI / 2},    // Complex curve
-    {5.0f, 4.0f, M_PI / 2}     // Star-like curve
+    {3.0f, 4.0f, M_PI / 2},    // Curva compleja
+    {5.0f, 4.0f, M_PI / 2}     // Curva estrellada
 };
 
 // Función para eliminar archivos en la carpeta frames
@@ -112,23 +112,27 @@ void create_gif(int num_frames) {
 }
 
 int main(int argc, char *argv[]) {
+    // Programación defensiva: Verificar que el número correcto de argumentos ha sido pasado
     if (argc != 3) {
         printf("Uso: %s <N> <num_curves>\n", argv[0]);
         return 1;
     }
 
+    // Evitar hard-coded variables: Parametrizar los valores a través de argumentos del comando
     int N = atoi(argv[1]);
     int num_curves = atoi(argv[2]);
 
+    // Programación defensiva: Limitar el número máximo de frames para evitar errores
     if (N > MAX_FRAMES) {
         N = MAX_FRAMES;
     }
 
-    srand(time(NULL));
+    srand(time(NULL)); // Inicializar la semilla de la función rand
 
-    mkdir("frames", 0777);
-    clear_frames_directory();
+    mkdir("frames", 0777); // Crear el directorio frames
+    clear_frames_directory(); // Limpiar el directorio frames
 
+    // Inicialización adecuada de la memoria: Reservar memoria para los arrays dinámicos
     CurveStart *starts = malloc(num_curves * sizeof(CurveStart));
     CurveParams *params = malloc(num_curves * sizeof(CurveParams));
     float *opacities = malloc(num_curves * sizeof(float));
@@ -136,6 +140,7 @@ int main(int argc, char *argv[]) {
     
     int active_curve = 0;  // Índice de la curva que se está desvaneciendo/reapareciendo
 
+    // Uso de OpenMP para paralelismo: Inicializar los parámetros de las curvas en paralelo
     #pragma omp parallel for
     for (int i = 0; i < num_curves; i++) {
         starts[i].x = rand() % WIDTH;
@@ -145,15 +150,17 @@ int main(int argc, char *argv[]) {
         directions[i] = -1;   // Inicialmente, las curvas comienzan a desaparecer
     }
 
-    double start_time = omp_get_wtime();
+    double start_time = omp_get_wtime(); // Tiempo de inicio para calcular FPS
     double total_fps = 0.0;
 
     #pragma omp parallel
     {
+        // Barrera de sincronización: El loop principal se divide en tareas paralelas
         #pragma omp for schedule(dynamic)
         for (int frame_count = 0; frame_count < N; frame_count++) {
-            double frame_start_time = omp_get_wtime();
+            double frame_start_time = omp_get_wtime(); // Tiempo de inicio del frame
             
+            // Uso de OpenMP para paralelismo: Actualizar las curvas en paralelo
             #pragma omp parallel for
             for (int i = 0; i < num_curves; i++) {
                 if (i == active_curve) {  // Solo la curva activa cambiará de opacidad y se reubicará
@@ -179,10 +186,11 @@ int main(int argc, char *argv[]) {
             
             save_frame_as_image(frame_count, num_curves, starts, params, opacities);
 
-            double frame_end_time = omp_get_wtime();
+            double frame_end_time = omp_get_wtime(); 
             double frame_time = frame_end_time - frame_start_time;
             double fps = 1.0 / frame_time;
 
+            // Evitar condiciones de carrera al actualizar total_fps
             #pragma omp critical
             {
                 total_fps += fps;
@@ -191,15 +199,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    double end_time = omp_get_wtime();
+    double end_time = omp_get_wtime(); // Tiempo de finalización del proceso
     double total_time = end_time - start_time;
     double average_fps = total_fps / N;
 
-    printf("Total time: %.2f seconds\n", total_time);
-    printf("Average FPS: %.2f\n", average_fps);
+    printf("Tiempo total: %.2f segundos\n", total_time);
+    printf("FPS promedio: %.2f\n", average_fps);
 
-    create_gif(N);
+    create_gif(N); // Crear un GIF con todos los frames generados
 
+    // Liberación adecuada de la memoria al final del programa
     free(starts);
     free(params);
     free(opacities);
