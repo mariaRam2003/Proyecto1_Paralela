@@ -12,6 +12,3 @@ WORKDIR /usr/src
 
 # Copia tu código fuente al contenedor
 COPY . .
-
-# Compila tu programa (opcional, si deseas compilarlo en la imagen)
-RUN gcc -o screensaver screensaver.c -lSDL2 -lcairo -lgif -lm -fopenmp
