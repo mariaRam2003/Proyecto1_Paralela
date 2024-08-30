@@ -5,5 +5,5 @@
 .vscode
 .DS_Store
 
-# ignore frames carpet
-frames
+# ignore data from the frames folder
+frames/*
