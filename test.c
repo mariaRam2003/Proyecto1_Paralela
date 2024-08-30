@@ -13,7 +13,7 @@
 
 #define WIDTH 640
 #define HEIGHT 480
-#define MAX_FRAMES 700 // Límite de creación de imágenes (puede ser modificado)
+#define MAX_FRAMES 700 // Límite de creación de imágenes (puede ser modificado) No mas de 700 Recommended: 700 and 5 curves
 #define NUM_CURVE_TYPES 5
 #define FADE_DURATION 15 // Aumentar para que sea mas fast
 
@@ -43,7 +43,7 @@ CurveParams curve_types[NUM_CURVE_TYPES] = {
 void clear_frames_directory() {
     DIR *dir = opendir("frames");
     struct dirent *entry;
-    char filepath[PATH_MAX];  // Use PATH_MAX for maximum path length
+    char filepath[PATH_MAX];
 
     if (dir != NULL) {
         while ((entry = readdir(dir)) != NULL) {
