@@ -5,3 +5,5 @@
 .vscode
 .DS_Store
 
+# ignore frames carpet
+frames
