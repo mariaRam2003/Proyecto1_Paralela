@@ -30,7 +30,7 @@ This project involves the creation of a screensaver using C with Lissajous Curve
 
 3. **Compile the Program**
     Once inside the container, ensure you are in the working directory /usr/src/. To compile the program, use:
-    
+
     ```bash
     gcc -o test.o test.c `pkg-config --cflags --libs cairo` -lm -fopenmp
     ```
