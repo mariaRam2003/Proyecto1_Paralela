@@ -1,6 +1,6 @@
 # Project 1 - Parallel Computing
 
-This project involves the creation of a screensaver using C. The implementation includes both sequential and parallel programming approaches to enable performance comparison.
+This project involves the creation of a screensaver using C with Lissajous Curves. The implementation includes both sequential and parallel programming approaches to enable performance comparison.
 
 ## Example of View
 ![Lissajous Curves Animation](lissajous.gif)
